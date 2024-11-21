@@ -726,7 +726,7 @@ if __name__ == "__main__":
     try:
         config = yaml.safe_load(open(args.options))
     except FileNotFoundError as e:
-        e.add_note("Could not read config file. Please specify a valid config file via '-o' or '--options'")
+        e.add_note("Could not read config file. Please specify a valid .yml config file via '-o' or '--options'")
         raise e
 
     print("-- Starting Program --",flush=True)
