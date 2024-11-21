@@ -1,0 +1,23 @@
+videos:
+  - input_data:
+      in_file: ./data/equirectangular.mp4
+    output_data:
+      out_file: test1.yml
+    conversion_info:
+      f: 180
+      a: 0.5
+      xi: 0.8
+      initial_angle: [0, 0, 50]
+      output_shape: [720, 1280]
+    detection_info:
+      bounding_box: [540, 160, 200, 400]
+options:
+  detection_info:
+    tracking_frames_per_detection: 50
+    tracking_type: kcf
+    ml_detector: rtmpose-x_8xb256-700e_body8-halpe26-384x288
+    visualize_bb: True
+  video_control:
+    exit_key: q
+  show_vid: True
+  export_data: False
