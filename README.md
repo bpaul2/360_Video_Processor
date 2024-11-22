@@ -16,7 +16,7 @@ The program is split up into five distint tasks that are handled respectively vi
 4. Exporting camera angles (optional)
 5. Displaying tracking video (optional)
 
-![Program process structure]()
+![Program process structure](./res/ProgramFlow.png)
 
 ---------
 
