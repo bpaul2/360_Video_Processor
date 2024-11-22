@@ -115,19 +115,29 @@ class ObjectTracker:
     def update_tracker(self, frame, draw_bb=False) -> float:
         ret, box = self.tracker.update(frame)
         d_yaw = 0
+        d_pitch = 0
+        d_roll = 0
         if ret:
             x, y, w, h = [int(v) for v in box]
+
             centBB_x = x + w/2
             d_x = centBB_x - (frame.shape[1] / 2)
             d_yaw = -d_x / (frame.shape[1] / 2 / np.pi) * 180 / np.pi
             d_yaw *= int(d_yaw >= 0.5 or d_yaw <= -0.5)
+
+            centBB_y = y + h/2
+            d_y = centBB_y - (frame.shape[0] / 2)
+            d_pitch = -d_y / (frame.shape[0] / 2 / np.pi) * 180 / np.pi
+            d_pitch *= int(d_pitch >= 0.5 or d_pitch <= -0.5)
+
             self.bb = [x, y, w, h]
             if draw_bb:
                 cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)   
                 cv2.circle(frame, (int(centBB_x), int(y + h/2)), 10, (0,0,255), -1)
                 cv2.circle(frame, (int(frame.shape[1]/2), int(frame.shape[0]/2)), 10, (255,0,255), -1)
+                
         self.last_frame = frame
-        return d_yaw
+        return float(d_roll), float(d_pitch), float(d_yaw)
 
 class ProgressTimer:
     '''
@@ -613,9 +623,9 @@ class DetectionProcess(WorkerProcess):
         if not self.curr_obj_tracker.running:
             print("New Tracker Confirm", flush=True)
             self.curr_obj_tracker.start_tracker(frame,self.init_params['bounding_box'])
-        d_yaw = self.curr_obj_tracker.update_tracker(frame, self.init_params['visualize_bb'])
+        angles = self.curr_obj_tracker.update_tracker(frame, self.init_params['visualize_bb'])
 
-        return 0, 0, float(d_yaw)
+        return angles
 
     def skeleton_tracking(self, frame: any) -> list:
         det_keys, _, det_bbs, det_conf_bbs = self.skel_tracker.get_predictions(frame)
@@ -628,7 +638,9 @@ class DetectionProcess(WorkerProcess):
 
         min_dist = None
         min_dx = 0
+        min_dy = 0
         d_yaw = 0
+        d_pitch = 0
         for i in range(len(det_bbs)):
             if det_conf_bbs[i] > 0.05:
                 bb = det_bbs[i][0]
@@ -640,10 +652,12 @@ class DetectionProcess(WorkerProcess):
                 if min_dist is None or (abs_dist < min_dist and abs_dist < 150):
                     min_dist = abs_dist
                     min_dx = d_x
+                    min_dy = d_y
 
         d_yaw = min_dx / (frame_x / 2 / np.pi) * 180 / np.pi
+        d_pitch = min_dy / (frame_y / 2 / np.pi) * 180 / np.pi
 
-        return 0, 0, float(d_yaw)
+        return 0, float(d_pitch), float(d_yaw)
 
 class VideoProcess(WorkerProcess):
     '''
