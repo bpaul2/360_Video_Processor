@@ -7,7 +7,18 @@ Custom python script for tracking a centering camera position on human subjects 
 
 The purpose of the program is to convert 360 degree/Equirectangular video into a fisheye projection, track the motion of a human target intially centered in the video, and adjust the camera angles to always be centered on the target.
 
-TODO: Process structure + demo videos/gifs
+### Program Structure
+
+The program is split up into five distint tasks that are handled respectively via multiprocessing. These include
+1. Reading each frame from the input video files
+2. Converting each frame from equirectangular to fisheye
+3. Tracking human motion in the frame
+4. Exporting camera angles (optional)
+5. Displaying tracking video (optional)
+
+![Program process structure]()
+
+---------
 
 ## Running the program
 
@@ -60,5 +71,7 @@ Where `-o`/`--options` specifies the name of the config file used. If none is sp
 When launched, messages in the terminal will indicate the convertion progress and if the `show_vid` option is enabled, a video player will display the motion tracking.
 
 If the `export_data` option is specified, you can view the camera angles used to center on the target within the output file specified in the `out_file` option.
+
+---------
 
 ## Acknowledgements
