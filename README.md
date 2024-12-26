@@ -75,3 +75,5 @@ If the `export_data` option is specified, you can view the camera angles used to
 ---------
 
 ## Acknowledgements
+
+I would like to thank [Hamid Mohammadi](https://github.com/sandstorm12) for the opportunity and guidance during this project
